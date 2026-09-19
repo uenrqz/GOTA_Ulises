@@ -1253,7 +1253,6 @@
         </div>
     </div>
 
-<?= $this->endSection() ?>
 
 <script>
 /* =========================================================
@@ -1349,7 +1348,46 @@
         99: { text: 'Tormenta fuerte',        icon: 'fa-bolt' }
     };
 
-    async function loadWeather(lat, lon, label) {
+    /* ---------- Geocodificación inversa ---------- */
+    async function reverseGeocode(lat, lon) {
+        // 1) BigDataCloud (client-side, sin key, en español)
+        try {
+            const r = await fetch(
+                `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=es`
+            );
+            if (r.ok) {
+                const d = await r.json();
+                const parts = [
+                    d.locality || d.city,
+                    d.principalSubdivision,
+                    d.countryName
+                ].filter(Boolean);
+                if (parts.length) return parts.join(', ');
+            }
+        } catch (e) { /* sigue con el fallback */ }
+
+        // 2) Fallback: Nominatim (OpenStreetMap)
+        try {
+            const r = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10&accept-language=es`
+            );
+            if (r.ok) {
+                const d = await r.json();
+                const a = d.address || {};
+                const parts = [
+                    a.city || a.town || a.village || a.county,
+                    a.state,
+                    a.country
+                ].filter(Boolean);
+                if (parts.length) return parts.join(', ');
+            }
+        } catch (e) { /* nada */ }
+
+        return null;
+    }
+
+    /* ---------- Clima ---------- */
+    async function loadWeather(lat, lon, fallbackLabel) {
         const card = document.getElementById('weatherCard');
         if (!card) return;
 
@@ -1368,7 +1406,11 @@
             card.querySelector('.weather-condition').textContent = wmo.text;
             document.getElementById('weatherWind').textContent = c.wind_speed_10m + ' km/h';
             document.getElementById('weatherHumidity').textContent = c.relative_humidity_2m + '%';
-            document.getElementById('weatherLocation').textContent = label;
+
+            // Ubicación: primero intenta obtener el nombre
+            document.getElementById('weatherLocation').textContent = '...';
+            const place = await reverseGeocode(lat, lon);
+            document.getElementById('weatherLocation').textContent = place || fallbackLabel || `${lat.toFixed(2)}, ${lon.toFixed(2)}`;
         } catch (e) {
             console.error('Error clima:', e);
             card.querySelector('.weather-icon i').className = 'fas fa-exclamation-triangle';
@@ -1376,7 +1418,7 @@
             card.querySelector('.weather-condition').textContent = 'Clima no disponible';
             document.getElementById('weatherWind').textContent = '--';
             document.getElementById('weatherHumidity').textContent = '--';
-            document.getElementById('weatherLocation').textContent = label || '--';
+            document.getElementById('weatherLocation').textContent = fallbackLabel || '--';
         }
     }
 
@@ -1388,9 +1430,11 @@
 
         navigator.geolocation.getCurrentPosition(
             pos => loadWeather(pos.coords.latitude, pos.coords.longitude, 'Mi ubicación'),
-            err => loadWeather(DEFAULT_COORDS.lat, DEFAULT_COORDS.lon, 'Guatemala'),
+            () => loadWeather(DEFAULT_COORDS.lat, DEFAULT_COORDS.lon, 'Guatemala'),
             { timeout: 6000, maximumAge: 600000 }
         );
     });
 })();
 </script>
+
+<?= $this->endSection() ?>
