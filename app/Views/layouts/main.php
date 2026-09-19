@@ -7,9 +7,9 @@
     <title><?= $this->renderSection('title') ?> - GOTA</title>
     
     <!-- Bootstrap 5 Mobile First -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?= base_url('assets/css/bootstrap.min.css') ?>" rel="stylesheet">
     <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="<?= base_url('assets/css/all.min.css') ?>">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
@@ -270,7 +270,7 @@
         <?= $this->renderSection('content') ?>
     <?php endif; ?>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= base_url('assets/js/bootstrap.bundle.min.js') ?>"></script>
     <?= $this->renderSection('scripts') ?>
 </body>
 </html>

@@ -3,6 +3,21 @@
 <?= $this->section('title') ?>Dashboard - GOTA<?= $this->endSection() ?>
 
 <?= $this->section('styles') ?>
+
+<!-- Bootstrap Icons (para los iconos del toggle de tema) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<!-- Anti-FOUC: aplica el tema guardado ANTES de renderizar -->
+<script>
+(function() {
+    try {
+        if (localStorage.getItem('gota-theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+    } catch(e) {}
+})();
+</script>
+
 <style>
     /* ============================================
        VARIABLES Y RESET
@@ -778,6 +793,196 @@
         0%, 100% { opacity: 1; }
         50% { opacity: 0.5; }
     }
+
+
+        /* ============================================
+       TARJETA DE CLIMA (Open-Meteo)
+       ============================================ */
+    .weather-card {
+        background: linear-gradient(135deg, #0d6efd, #0a58ca);
+        border-radius: var(--card-radius);
+        padding: 16px 18px;
+        color: #fff;
+        margin-bottom: 16px;
+        box-shadow: var(--shadow-md);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+
+    .weather-main {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .weather-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7rem;
+        flex-shrink: 0;
+    }
+
+    .weather-temp {
+        font-size: 1.7rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .weather-condition {
+        font-size: 0.75rem;
+        opacity: 0.9;
+        margin-top: 4px;
+        text-transform: capitalize;
+    }
+
+    .weather-details {
+        display: flex;
+        gap: 14px;
+        font-size: 0.72rem;
+        flex-wrap: wrap;
+    }
+
+    .weather-details span {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: rgba(255,255,255,0.15);
+        padding: 4px 10px;
+        border-radius: 20px;
+    }
+
+    /* ============================================
+       BOTÓN DE TEMA (Modo Claro / Oscuro)
+       ============================================ */
+    .header-actions .theme-toggle {
+        width: auto;
+        height: 40px;
+        border-radius: 20px;
+        padding: 0 14px;
+        gap: 6px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    .header-actions .theme-toggle i {
+        font-size: 1.05rem;
+    }
+
+    .header-actions .theme-toggle .theme-label {
+        display: none;
+    }
+
+    @media (min-width: 480px) {
+        .header-actions .theme-toggle .theme-label {
+            display: inline;
+        }
+    }
+
+    /* ============================================
+       MODO OSCURO
+       ============================================ */
+    [data-theme="dark"] {
+        --dm-bg: #0f1115;
+        --dm-card: #1a1d24;
+        --dm-elevated: #232730;
+        --dm-border: rgba(255,255,255,0.07);
+        --dm-text: #e8eaed;
+        --dm-text-secondary: #9aa0a6;
+    }
+
+    [data-theme="dark"] body {
+        background: var(--dm-bg);
+        color: var(--dm-text);
+    }
+
+    [data-theme="dark"] .app-header {
+        background: var(--dm-card);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+        border-bottom: 1px solid var(--dm-border);
+    }
+
+    [data-theme="dark"] .app-header .brand small {
+        color: var(--dm-text-secondary);
+        -webkit-text-fill-color: var(--dm-text-secondary);
+    }
+
+    [data-theme="dark"] .header-actions .btn-icon {
+        background: var(--dm-elevated);
+        color: var(--dm-text);
+    }
+
+    [data-theme="dark"] .user-avatar {
+        border-color: var(--dm-card);
+    }
+
+    [data-theme="dark"] .stat-card,
+    [data-theme="dark"] .analytics-card,
+    [data-theme="dark"] .table-container {
+        background: var(--dm-card);
+        border-color: var(--dm-border);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    }
+
+    [data-theme="dark"] .stat-card .stat-number,
+    [data-theme="dark"] .analytics-card .analytics-number,
+    [data-theme="dark"] .table-container .table-header h6,
+    [data-theme="dark"] .lectura-card .lectura-cliente {
+        color: var(--dm-text);
+    }
+
+    [data-theme="dark"] .stat-card .stat-label,
+    [data-theme="dark"] .stat-card .stat-sub,
+    [data-theme="dark"] .analytics-card .analytics-label,
+    [data-theme="dark"] .lectura-card .lectura-cliente small {
+        color: var(--dm-text-secondary);
+    }
+
+    [data-theme="dark"] .lectura-card {
+        background: var(--dm-elevated);
+    }
+
+    [data-theme="dark"] .lectura-card .lectura-details {
+        background: var(--dm-card);
+    }
+
+    [data-theme="dark"] .lectura-card .lectura-details .detail-item .value {
+        color: var(--dm-text);
+    }
+
+    [data-theme="dark"] .bottom-nav {
+        background: var(--dm-card);
+        border-top-color: var(--dm-border);
+        box-shadow: 0 -2px 12px rgba(0,0,0,0.4);
+    }
+
+    [data-theme="dark"] .table-container .table {
+        color: var(--dm-text);
+    }
+
+    [data-theme="dark"] .table-container .table thead th,
+    [data-theme="dark"] .table-container .table tbody td {
+        border-color: var(--dm-border);
+        color: var(--dm-text);
+    }
+
+    [data-theme="dark"] .pagination-wrapper small {
+        color: var(--dm-text-secondary);
+    }
+
+    [data-theme="dark"] .weather-card {
+        background: linear-gradient(135deg, #1e3a8a, #0d2447);
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -794,6 +999,26 @@
         <a href="<?= current_url() ?>" class="btn btn-primary btn-sm rounded-pill px-3" style="font-size: 0.75rem;">
             <i class="fas fa-sync-alt me-1"></i> Actualizar
         </a>
+    </div>
+
+    <!-- ==========================================
+     TARJETA DE CLIMA (Open-Meteo)
+     ========================================== -->
+    <div class="weather-card" id="weatherCard">
+        <div class="weather-main">
+            <div class="weather-icon">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <div>
+                <div class="weather-temp">--°C</div>
+                <div class="weather-condition">Cargando clima...</div>
+            </div>
+        </div>
+        <div class="weather-details">
+            <span><i class="fas fa-wind"></i> <b id="weatherWind">--</b></span>
+            <span><i class="fas fa-tint"></i> <b id="weatherHumidity">--</b></span>
+            <span><i class="fas fa-map-marker-alt"></i> <b id="weatherLocation">...</b></span>
+        </div>
     </div>
 
     <!-- ==========================================
@@ -1029,3 +1254,143 @@
     </div>
 
 <?= $this->endSection() ?>
+
+<script>
+/* =========================================================
+   1) TOGGLE DE TEMA (Claro / Oscuro)
+   ========================================================= */
+(function() {
+    const STORAGE_KEY = 'gota-theme';
+
+    function updateButton(theme) {
+        const btn = document.getElementById('themeToggle');
+        if (!btn) return;
+        if (theme === 'dark') {
+            btn.innerHTML = '<i class="bi bi-lightbulb"></i><span class="theme-label">Modo Oscuro On</span>';
+        } else {
+            btn.innerHTML = '<i class="bi bi-lightbulb-fill"></i><span class="theme-label">Modo Claro On</span>';
+        }
+    }
+
+    function applyTheme(theme) {
+        if (theme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+            document.documentElement.removeAttribute('data-theme');
+        }
+        try { localStorage.setItem(STORAGE_KEY, theme); } catch(e) {}
+        updateButton(theme);
+    }
+
+    function injectButton() {
+        const headerActions = document.querySelector('.app-header .header-actions');
+        if (!headerActions || document.getElementById('themeToggle')) return;
+
+        const btn = document.createElement('button');
+        btn.id = 'themeToggle';
+        btn.type = 'button';
+        btn.className = 'btn-icon theme-toggle';
+        btn.title = 'Cambiar tema';
+
+        // Insertar antes del avatar del usuario
+        const avatar = headerActions.querySelector('.user-avatar');
+        if (avatar) {
+            headerActions.insertBefore(btn, avatar);
+        } else {
+            headerActions.appendChild(btn);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        injectButton();
+        const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+        updateButton(current);
+
+        const btn = document.getElementById('themeToggle');
+        if (btn) {
+            btn.addEventListener('click', function() {
+                const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                applyTheme(cur === 'dark' ? 'light' : 'dark');
+            });
+        }
+    });
+})();
+
+
+/* =========================================================
+   2) CLIMA ACTUAL (Open-Meteo)
+   ========================================================= */
+(function() {
+    // Coordenadas por defecto (Guatemala) por si el usuario niega geolocalización
+    const DEFAULT_COORDS = { lat: 14.6349, lon: -90.5069 };
+
+    // Mapeo de códigos WMO → texto + icono (FontAwesome)
+    const WMO_MAP = {
+        0:  { text: 'Despejado',              icon: 'fa-sun' },
+        1:  { text: 'Mayormente despejado',   icon: 'fa-cloud-sun' },
+        2:  { text: 'Parcialmente nublado',   icon: 'fa-cloud-sun' },
+        3:  { text: 'Nublado',                icon: 'fa-cloud' },
+        45: { text: 'Niebla',                 icon: 'fa-smog' },
+        48: { text: 'Niebla con escarcha',    icon: 'fa-smog' },
+        51: { text: 'Llovizna ligera',        icon: 'fa-cloud-rain' },
+        53: { text: 'Llovizna',               icon: 'fa-cloud-rain' },
+        55: { text: 'Llovizna intensa',       icon: 'fa-cloud-rain' },
+        61: { text: 'Lluvia ligera',          icon: 'fa-cloud-rain' },
+        63: { text: 'Lluvia',                 icon: 'fa-cloud-showers-heavy' },
+        65: { text: 'Lluvia intensa',         icon: 'fa-cloud-showers-heavy' },
+        71: { text: 'Nieve ligera',           icon: 'fa-snowflake' },
+        73: { text: 'Nieve',                  icon: 'fa-snowflake' },
+        75: { text: 'Nieve intensa',          icon: 'fa-snowflake' },
+        80: { text: 'Chubascos ligeros',      icon: 'fa-cloud-rain' },
+        81: { text: 'Chubascos',              icon: 'fa-cloud-showers-heavy' },
+        82: { text: 'Chubascos fuertes',      icon: 'fa-cloud-showers-heavy' },
+        95: { text: 'Tormenta',               icon: 'fa-bolt' },
+        96: { text: 'Tormenta con granizo',   icon: 'fa-bolt' },
+        99: { text: 'Tormenta fuerte',        icon: 'fa-bolt' }
+    };
+
+    async function loadWeather(lat, lon, label) {
+        const card = document.getElementById('weatherCard');
+        if (!card) return;
+
+        try {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}` +
+                        `&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m` +
+                        `&timezone=auto`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Error HTTP ' + res.status);
+            const data = await res.json();
+            const c = data.current;
+            const wmo = WMO_MAP[c.weather_code] || { text: 'Desconocido', icon: 'fa-cloud' };
+
+            card.querySelector('.weather-icon i').className = 'fas ' + wmo.icon;
+            card.querySelector('.weather-temp').textContent = Math.round(c.temperature_2m) + '°C';
+            card.querySelector('.weather-condition').textContent = wmo.text;
+            document.getElementById('weatherWind').textContent = c.wind_speed_10m + ' km/h';
+            document.getElementById('weatherHumidity').textContent = c.relative_humidity_2m + '%';
+            document.getElementById('weatherLocation').textContent = label;
+        } catch (e) {
+            console.error('Error clima:', e);
+            card.querySelector('.weather-icon i').className = 'fas fa-exclamation-triangle';
+            card.querySelector('.weather-temp').textContent = '--°C';
+            card.querySelector('.weather-condition').textContent = 'Clima no disponible';
+            document.getElementById('weatherWind').textContent = '--';
+            document.getElementById('weatherHumidity').textContent = '--';
+            document.getElementById('weatherLocation').textContent = label || '--';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!navigator.geolocation) {
+            loadWeather(DEFAULT_COORDS.lat, DEFAULT_COORDS.lon, 'Guatemala');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            pos => loadWeather(pos.coords.latitude, pos.coords.longitude, 'Mi ubicación'),
+            err => loadWeather(DEFAULT_COORDS.lat, DEFAULT_COORDS.lon, 'Guatemala'),
+            { timeout: 6000, maximumAge: 600000 }
+        );
+    });
+})();
+</script>
