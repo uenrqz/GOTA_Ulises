@@ -103,6 +103,8 @@ _modules/*
 # NetBeans
 /nbproject/
 /build/
+/rag-service/target/
+/rag-service/.idea/
 /nbbuild/
 /dist/
 /nbdist/

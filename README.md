@@ -2,6 +2,15 @@
 
 Este documento describe las mejoras implementadas en el dashboard principal del sistema GOTA, incluyendo el módulo de clima en tiempo real y el sistema de tema claro/oscuro.
 
+## Servicio RAG
+
+El servicio independiente de Spring Boot para el chatbot público se encuentra en
+[`rag-service/`](./rag-service/). Usa una base PostgreSQL separada con
+`pgvector`; no modifica la base MySQL del monolito CodeIgniter.
+
+Consulta [`rag-service/README.md`](./rag-service/README.md) para requisitos,
+configuración y ejecución local.
+
 **Cambios incluidos:**
 
 1. Clima actual para el lector del campo
