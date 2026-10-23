@@ -19,14 +19,28 @@ public class ChatService {
 
     private final OllamaClient ollamaClient;
     private final RagChunkRepository ragChunkRepository;
+    private final OperationalMetricsService operationalMetricsService;
 
-    public ChatService(OllamaClient ollamaClient, RagChunkRepository ragChunkRepository) {
+    public ChatService(
+            OllamaClient ollamaClient,
+            RagChunkRepository ragChunkRepository,
+            OperationalMetricsService operationalMetricsService
+    ) {
         this.ollamaClient = ollamaClient;
         this.ragChunkRepository = ragChunkRepository;
+        this.operationalMetricsService = operationalMetricsService;
     }
 
     public ChatResponse answer(ChatRequest request) {
         String conversationId = conversationIdOrNew(request.conversationId());
+        if (isActiveClientsQuestion(request.message())) {
+            int activeClients = operationalMetricsService.countActiveClients();
+            return new ChatResponse(
+                    "Actualmente tenemos %d clientes activos.".formatted(activeClients),
+                    List.of(),
+                    conversationId
+            );
+        }
         List<RagChunkRepository.RagChunk> chunks =
                 ragChunkRepository.findSimilar(ollamaClient.embed(request.message()));
         String prompt = """
@@ -49,6 +63,12 @@ public class ChatService {
                 .toList();
 
         return new ChatResponse(ollamaClient.generate(prompt), sources, conversationId);
+    }
+
+    private boolean isActiveClientsQuestion(String message) {
+        String normalized = message.toLowerCase(java.util.Locale.ROOT);
+        return normalized.contains("cliente")
+                && normalized.contains("activo");
     }
 
     private String formatContext(List<RagChunkRepository.RagChunk> chunks) {

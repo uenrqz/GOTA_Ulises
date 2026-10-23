@@ -102,6 +102,20 @@ monolito; no deben resolverse mediante SQL generado por el modelo.
 
 Comprobación de estado: `GET /actuator/health`.
 
+## Consultas operativas controladas
+
+El servicio mantiene una conexión separada a MySQL para responder algunas
+métricas públicas en tiempo real. Por seguridad, estas métricas usan consultas
+fijas definidas en Java; el modelo no genera SQL.
+
+Actualmente está disponible:
+
+- `¿Cuántos clientes activos tenemos?`: consulta `Clientes.activo = 1`.
+
+Configura la conexión con `OPERATIONAL_DATABASE_URL`,
+`OPERATIONAL_DATABASE_USERNAME` y `OPERATIONAL_DATABASE_PASSWORD`. La cuenta
+debe tener únicamente los permisos necesarios para leer las tablas requeridas.
+
 ## Ingesta de documentos
 
 La ingesta guarda el documento original, lo divide en fragmentos y genera un
