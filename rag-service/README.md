@@ -16,8 +16,8 @@ flowchart LR
     O --> S
     S -->|Respuesta| D
 
-    S -.->|Esquema preparado<br/>para documentos y chunks| P[(PostgreSQL<br/>gota_rag :5433)]
-    P -.->|pgvector: recuperación<br/>semántica pendiente| S
+    S -->|Embedding de la pregunta<br/>y búsqueda semántica| P[(PostgreSQL<br/>gota_rag :5433)]
+    P -->|Fragmentos relevantes| S
 ```
 
 ### Estado actual del flujo
@@ -27,14 +27,14 @@ flowchart LR
 3. Spring Boot construye el prompt y lo envía a Ollama.
 4. Ollama genera la respuesta usando el modelo local `llama3.2`.
 5. Spring Boot devuelve la respuesta al dashboard.
-6. PostgreSQL contiene el esquema inicial para documentos y fragmentos, pero la
-   ingesta de documentos, los embeddings y la recuperación mediante `pgvector`
-   todavía deben conectarse al flujo de conversación.
+6. Spring Boot genera el embedding de la pregunta y consulta los fragmentos
+   relevantes almacenados en PostgreSQL mediante `pgvector`.
+7. Los fragmentos recuperados se agregan al prompt antes de enviarlo a Ollama.
 
 Por tanto, la implementación actual corresponde a:
 
 ```text
-Pregunta → Spring Boot → Ollama/llama3.2 → Respuesta
+Pregunta → Embedding → pgvector → Contexto → Ollama/llama3.2 → Respuesta
 ```
 
 El flujo RAG completo que se habilitará posteriormente será:
@@ -91,11 +91,14 @@ LLM.
 }
 ```
 
-Actualmente, el endpoint envía directamente a Ollama la pregunta del usuario.
-Todavía no implementa el flujo RAG completo: la recuperación mediante pgvector
-y los embeddings deben conectarse antes de habilitar respuestas para
-producción. Hasta entonces, las respuestas no deben considerarse fundamentadas
-en documentos de GOTA.
+El endpoint genera un embedding de la pregunta, recupera hasta cinco fragmentos
+similares desde `pgvector` y envía ese contexto a Ollama. Si no hay fragmentos
+relevantes, el asistente debe indicar que no puede confirmar la respuesta.
+
+El RAG documental no consulta automáticamente las tablas operativas de MySQL.
+Por eso preguntas como “¿cuántos clientes activos tenemos?” requieren una
+integración adicional con consultas controladas sobre la base de datos del
+monolito; no deben resolverse mediante SQL generado por el modelo.
 
 Comprobación de estado: `GET /actuator/health`.
 
