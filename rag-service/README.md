@@ -52,14 +52,16 @@ Pregunta → Búsqueda semántica → Contexto → Ollama → Respuesta fundamen
 - PostgreSQL con la extensión `vector`
 - Ollama instalado y ejecutándose localmente
 - Modelo `llama3.2` descargado
+- Modelo de embeddings `nomic-embed-text` descargado
 
 ## Ejecución local
 
 1. Crea una base de datos llamada `gota_rag` y habilita `pgvector`.
-2. Confirma que Ollama está ejecutándose y que el modelo está disponible:
+2. Confirma que Ollama está ejecutándose y descarga los modelos necesarios:
 
 ```bash
 ollama list
+ollama pull nomic-embed-text
 ollama run llama3.2
 ```
 
@@ -96,3 +98,34 @@ producción. Hasta entonces, las respuestas no deben considerarse fundamentadas
 en documentos de GOTA.
 
 Comprobación de estado: `GET /actuator/health`.
+
+## Ingesta de documentos
+
+La ingesta guarda el documento original, lo divide en fragmentos y genera un
+embedding para cada fragmento mediante `nomic-embed-text`.
+
+El endpoint está pensado para uso administrativo controlado durante esta etapa:
+
+`POST /api/rag/documents`
+
+Ejemplo:
+
+```json
+{
+  "title": "Procedimiento para reportar fugas",
+  "source": "manual-atencion-ciudadana.md",
+  "content": "Para reportar una fuga, comuníquese con los canales oficiales..."
+}
+```
+
+La respuesta contiene el identificador del documento almacenado:
+
+```json
+{
+  "documentId": "00000000-0000-0000-0000-000000000000"
+}
+```
+
+La recuperación de fragmentos mediante `pgvector` todavía debe conectarse al
+endpoint de chat. Hasta completar esa etapa, la ingesta no modifica el
+comportamiento de las respuestas.
