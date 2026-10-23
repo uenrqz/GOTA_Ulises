@@ -24,7 +24,7 @@ management:
 
 app:
   cors:
-    allowed-origin: ${APP_CORS_ALLOWED_ORIGIN:http://localhost:3000}
-  gemini:
-    api-key: ${GEMINI_API_KEY:}
-    model: ${GEMINI_MODEL:gemini-3.8-flash}
+    allowed-origin: ${APP_CORS_ALLOWED_ORIGIN:http://localhost:8080,http://localhost:3000}
+  ollama:
+    base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+    model: ${OLLAMA_MODEL:llama3.2}

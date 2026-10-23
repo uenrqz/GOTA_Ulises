@@ -2,7 +2,7 @@ package com.gota.rag.application;
 
 import com.gota.rag.api.ChatController.ChatRequest;
 import com.gota.rag.api.ChatController.ChatResponse;
-import com.gota.rag.infrastructure.gemini.GeminiClient;
+import com.gota.rag.infrastructure.ollama.OllamaClient;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,10 +14,10 @@ import java.util.UUID;
 @Service
 public class ChatService {
 
-    private final GeminiClient geminiClient;
+    private final OllamaClient ollamaClient;
 
-    public ChatService(GeminiClient geminiClient) {
-        this.geminiClient = geminiClient;
+    public ChatService(OllamaClient ollamaClient) {
+        this.ollamaClient = ollamaClient;
     }
 
     public ChatResponse answer(ChatRequest request) {
@@ -31,7 +31,7 @@ public class ChatService {
                 %s
                 """.formatted(request.message());
 
-        return new ChatResponse(geminiClient.generate(prompt), List.of(), conversationId);
+        return new ChatResponse(ollamaClient.generate(prompt), List.of(), conversationId);
     }
 
     public String conversationIdOrNew(String conversationId) {
