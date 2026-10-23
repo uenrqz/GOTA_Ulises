@@ -111,6 +111,9 @@ fijas definidas en Java; el modelo no genera SQL.
 Actualmente está disponible:
 
 - `¿Cuántos clientes activos tenemos?`: consulta `Clientes.activo = 1`.
+- `¿Cómo se llama el cliente?`: devuelve los nombres de clientes activos.
+- `¿Cuál es el costo vigente?`: consulta las tarifas activas y vigentes de
+  `Tarifas`.
 
 Configura la conexión con `OPERATIONAL_DATABASE_URL`,
 `OPERATIONAL_DATABASE_USERNAME` y `OPERATIONAL_DATABASE_PASSWORD`. La cuenta

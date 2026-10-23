@@ -43,6 +43,21 @@ public class ChatService {
                     conversationId
             );
         }
+        if (isActiveClientNamesQuestion(request.message())) {
+            List<String> names = operationalMetricsService.findActiveClientNames();
+            String answer = names.isEmpty()
+                    ? "No hay clientes activos registrados actualmente."
+                    : "Los clientes activos registrados son: %s.".formatted(String.join(", ", names));
+            return new ChatResponse(answer, List.of(), conversationId);
+        }
+        if (isCurrentTariffQuestion(request.message())) {
+            List<OperationalMetricsService.CurrentTariff> tariffs =
+                    operationalMetricsService.findCurrentTariffs();
+            String answer = tariffs.isEmpty()
+                    ? "No hay tarifas vigentes registradas actualmente."
+                    : formatTariffs(tariffs);
+            return new ChatResponse(answer, List.of(), conversationId);
+        }
         List<RagChunkRepository.RagChunk> chunks =
                 ragChunkRepository.findSimilar(ollamaClient.embed(request.message()));
         String prompt = """
@@ -71,6 +86,31 @@ public class ChatService {
         String normalized = message.toLowerCase(java.util.Locale.ROOT);
         return normalized.contains("cliente")
                 && normalized.contains("activo");
+    }
+
+    private boolean isActiveClientNamesQuestion(String message) {
+        String normalized = message.toLowerCase(java.util.Locale.ROOT);
+        return normalized.contains("cliente")
+                && (normalized.contains("nombre") || normalized.contains("llama"));
+    }
+
+    private boolean isCurrentTariffQuestion(String message) {
+        String normalized = message.toLowerCase(java.util.Locale.ROOT);
+        return normalized.contains("tarifa")
+                || normalized.contains("costo vigente")
+                || normalized.contains("precio vigente");
+    }
+
+    private String formatTariffs(List<OperationalMetricsService.CurrentTariff> tariffs) {
+        return tariffs.stream()
+                .map(tariff -> "Servicio %s: tarifa base %s, incluye %s m³ y el exceso cuesta %s por m³"
+                        .formatted(
+                                tariff.serviceType(),
+                                tariff.baseRate(),
+                                tariff.includedVolumeM3(),
+                                tariff.excessRate()
+                        ))
+                .collect(Collectors.joining(". ", "Tarifas vigentes: ", "."));
     }
 
     private String formatContext(List<RagChunkRepository.RagChunk> chunks) {
