@@ -36,7 +36,9 @@ public class ChatService {
         if (isActiveClientsQuestion(request.message())) {
             int activeClients = operationalMetricsService.countActiveClients();
             return new ChatResponse(
-                    "Actualmente tenemos %d clientes activos.".formatted(activeClients),
+                    activeClients == 1
+                            ? "Actualmente tenemos 1 cliente activo."
+                            : "Actualmente tenemos %d clientes activos.".formatted(activeClients),
                     List.of(),
                     conversationId
             );
