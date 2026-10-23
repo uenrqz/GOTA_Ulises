@@ -983,10 +983,191 @@
     [data-theme="dark"] .weather-card {
         background: linear-gradient(135deg, #1e3a8a, #0d2447);
     }
+
+    .rag-chat-launcher {
+        position: fixed;
+        right: 24px;
+        bottom: 24px;
+        z-index: 1100;
+        width: 58px;
+        height: 58px;
+        border: 0;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d6efd, #0a58ca);
+        color: #fff;
+        box-shadow: 0 8px 24px rgba(13, 110, 253, 0.35);
+        font-size: 1.35rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .rag-chat-launcher:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 28px rgba(13, 110, 253, 0.45);
+    }
+
+    .rag-chat-panel {
+        position: fixed;
+        right: 24px;
+        bottom: 94px;
+        z-index: 1099;
+        display: flex;
+        flex-direction: column;
+        width: min(380px, calc(100vw - 32px));
+        height: min(560px, calc(100vh - 130px));
+        overflow: hidden;
+        border: 1px solid rgba(13, 110, 253, 0.15);
+        border-radius: 18px;
+        background: #fff;
+        box-shadow: 0 16px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .rag-chat-panel[hidden] {
+        display: none;
+    }
+
+    .rag-chat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        color: #fff;
+        background: linear-gradient(135deg, #0d6efd, #0a58ca);
+    }
+
+    .rag-chat-header h6 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .rag-chat-header small {
+        display: block;
+        margin-top: 2px;
+        opacity: 0.8;
+    }
+
+    .rag-chat-close {
+        border: 0;
+        background: transparent;
+        color: #fff;
+        font-size: 1.1rem;
+    }
+
+    .rag-chat-messages {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 10px;
+        overflow-y: auto;
+        padding: 16px;
+        background: #f7f9fc;
+    }
+
+    .rag-chat-message {
+        max-width: 88%;
+        padding: 10px 12px;
+        border-radius: 14px;
+        color: #263238;
+        font-size: 0.88rem;
+        line-height: 1.45;
+        white-space: pre-wrap;
+    }
+
+    .rag-chat-message.assistant {
+        align-self: flex-start;
+        background: #fff;
+        border: 1px solid #e4eaf2;
+    }
+
+    .rag-chat-message.user {
+        align-self: flex-end;
+        color: #fff;
+        background: #0d6efd;
+    }
+
+    .rag-chat-status {
+        min-height: 20px;
+        padding: 0 16px;
+        color: #6c757d;
+        font-size: 0.75rem;
+    }
+
+    .rag-chat-form {
+        display: flex;
+        gap: 8px;
+        padding: 12px;
+        border-top: 1px solid #e4eaf2;
+        background: #fff;
+    }
+
+    .rag-chat-input {
+        min-width: 0;
+        resize: none;
+    }
+
+    [data-theme="dark"] .rag-chat-panel,
+    [data-theme="dark"] .rag-chat-form {
+        background: var(--dm-card);
+    }
+
+    [data-theme="dark"] .rag-chat-messages {
+        background: var(--dm-bg);
+    }
+
+    [data-theme="dark"] .rag-chat-message.assistant {
+        color: var(--dm-text);
+        background: var(--dm-elevated);
+        border-color: var(--dm-border);
+    }
+
+    @media (max-width: 576px) {
+        .rag-chat-launcher {
+            right: 16px;
+            bottom: 82px;
+        }
+
+        .rag-chat-panel {
+            right: 16px;
+            bottom: 150px;
+            height: min(540px, calc(100vh - 180px));
+        }
+    }
 </style>
 <?= $this->endSection() ?>
 
 <?= $this->section('content') ?>
+
+    <button type="button" class="rag-chat-launcher" id="ragChatLauncher"
+            aria-label="Abrir asistente GOTA" aria-expanded="false">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <section class="rag-chat-panel" id="ragChatPanel" hidden aria-label="Asistente GOTA">
+        <header class="rag-chat-header">
+            <div>
+                <h6><i class="fas fa-robot me-1"></i> Asistente GOTA</h6>
+                <small>Consulta tarifas, pagos y procedimientos</small>
+            </div>
+            <button type="button" class="rag-chat-close" id="ragChatClose"
+                    aria-label="Cerrar asistente">
+                <i class="fas fa-times"></i>
+            </button>
+        </header>
+        <div class="rag-chat-messages" id="ragChatMessages" aria-live="polite">
+            <div class="rag-chat-message assistant">
+                Hola. ¿En qué puedo ayudarte?
+            </div>
+        </div>
+        <div class="rag-chat-status" id="ragChatStatus" role="status"></div>
+        <form class="rag-chat-form" id="ragChatForm">
+            <textarea class="form-control rag-chat-input" id="ragChatInput"
+                      rows="1" maxlength="2000"
+                      placeholder="Escribe tu pregunta..." required></textarea>
+            <button type="submit" class="btn btn-primary align-self-end"
+                    id="ragChatSend" aria-label="Enviar pregunta">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </form>
+    </section>
 
     <!-- Título -->
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -1433,6 +1614,75 @@
             () => loadWeather(DEFAULT_COORDS.lat, DEFAULT_COORDS.lon, 'Guatemala'),
             { timeout: 6000, maximumAge: 600000 }
         );
+    });
+})();
+</script>
+
+<script>
+(function () {
+    const launcher = document.getElementById('ragChatLauncher');
+    const panel = document.getElementById('ragChatPanel');
+    const closeButton = document.getElementById('ragChatClose');
+    const form = document.getElementById('ragChatForm');
+    const input = document.getElementById('ragChatInput');
+    const messages = document.getElementById('ragChatMessages');
+    const status = document.getElementById('ragChatStatus');
+    const sendButton = document.getElementById('ragChatSend');
+    const chatUrl = 'http://localhost:8081/api/rag/chat';
+    let conversationId = null;
+
+    if (!launcher || !panel || !form) return;
+
+    function togglePanel(open) {
+        panel.hidden = !open;
+        launcher.setAttribute('aria-expanded', String(open));
+        if (open) input.focus();
+    }
+
+    function addMessage(text, type) {
+        const message = document.createElement('div');
+        message.className = `rag-chat-message ${type}`;
+        message.textContent = text;
+        messages.appendChild(message);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    launcher.addEventListener('click', () => togglePanel(panel.hidden));
+    closeButton.addEventListener('click', () => togglePanel(false));
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const message = input.value.trim();
+        if (!message || sendButton.disabled) return;
+
+        addMessage(message, 'user');
+        input.value = '';
+        input.disabled = true;
+        sendButton.disabled = true;
+        status.textContent = 'Consultando al asistente...';
+
+        try {
+            const response = await fetch(chatUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message, conversationId })
+            });
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message || 'No se pudo consultar el asistente.');
+            }
+
+            conversationId = data.conversationId || conversationId;
+            addMessage(data.answer, 'assistant');
+            status.textContent = '';
+        } catch (error) {
+            addMessage(error.message || 'No se pudo conectar con el asistente.', 'assistant');
+            status.textContent = 'Revisa que Spring Boot y Ollama estén ejecutándose.';
+        } finally {
+            input.disabled = false;
+            sendButton.disabled = false;
+            input.focus();
+        }
     });
 })();
 </script>
