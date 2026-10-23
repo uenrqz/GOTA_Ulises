@@ -9,13 +9,19 @@ PostgreSQL database with `pgvector`.
 - Java 21
 - Maven 3.9+
 - PostgreSQL with the `vector` extension
-- A Gemini API key from Google AI Studio
+- Ollama installed and running locally
+- The `llama3.2` model downloaded
 
 ## Run locally
 
 1. Create a database named `gota_rag` and enable `pgvector`.
-2. Set `GEMINI_API_KEY` in the IntelliJ run configuration, your shell, or an
-   ignored local `.env` file. Never commit the key.
+2. Confirm Ollama is running and the model is available:
+
+```bash
+ollama list
+ollama run llama3.2
+```
+
 3. Set the database variables from `.env.example`.
 4. Start the service:
 
@@ -29,10 +35,9 @@ Flyway creates the RAG tables on startup. The service listens on
 ## API
 
 `POST /api/rag/chat` is the internal contract that the Next.js BFF will call.
-The Gemini adapter is located in
-`src/main/java/com/gota/rag/infrastructure/gemini/GeminiClient.java`; it
-creates the SDK client in `GeminiConfig` and reads the key from
-`GEMINI_API_KEY`.
+The Ollama adapter is located in
+`src/main/java/com/gota/rag/infrastructure/ollama/OllamaClient.java`; it calls
+Ollama's local `/api/chat` endpoint. No LLM API key is required.
 
 ```json
 {
@@ -41,7 +46,7 @@ creates the SDK client in `GeminiConfig` and reads the key from
 }
 ```
 
-The current endpoint calls Gemini directly with the user prompt. It is not yet
+The current endpoint calls Ollama directly with the user prompt. It is not yet
 the complete RAG flow: pgvector retrieval and embeddings still need to be
 connected before enabling production answers. Until then, do not treat the
 response as grounded in GOTA documents.
