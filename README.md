@@ -1,6 +1,7 @@
 **Nombre:** Ulises Enríque Pineda Enríquez<br>
 **Carnet:** 0905-23-19852<br>
 **Repositorio:** https://github.com/uenrqz/GOTA_Ulises.git<br>
+**Rama:** feature/parcial_Ulises<br>
 **Modulo asignado:** Chatbot con RAG
 
 # GOTA - Arquitectura de la solución integrada
