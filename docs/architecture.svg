@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">Arquitectura integrada de GOTA</title>
+  <desc id="desc">El navegador se comunica con el monolito CodeIgniter y con la API RAG. El monolito usa MySQL. La API RAG usa PostgreSQL con pgvector, Ollama y consultas operativas de solo lectura hacia MySQL.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#334155"/>
+    </marker>
+    <style>
+      .box { stroke: #334155; stroke-width: 2; rx: 12; }
+      .title { font: 700 20px sans-serif; fill: #0f172a; }
+      .label { font: 16px sans-serif; fill: #0f172a; }
+      .small { font: 14px sans-serif; fill: #334155; }
+      .line { stroke: #334155; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .dashed { stroke-dasharray: 8 6; }
+    </style>
+  </defs>
+  <rect width="1200" height="760" fill="#f8fafc"/>
+  <text x="600" y="38" text-anchor="middle" class="title">GOTA - Arquitectura integrada implementada</text>
+
+  <rect x="45" y="95" width="190" height="90" class="box" fill="#dbeafe"/>
+  <text x="140" y="132" text-anchor="middle" class="label">Navegador</text>
+  <text x="140" y="158" text-anchor="middle" class="small">Usuario / cliente</text>
+
+  <rect x="300" y="75" width="280" height="140" class="box" fill="#dcfce7"/>
+  <text x="440" y="113" text-anchor="middle" class="label">Monolito CodeIgniter 4</text>
+  <text x="440" y="140" text-anchor="middle" class="small">Apache + PHP 8.2 :8080</text>
+  <text x="440" y="166" text-anchor="middle" class="small">Dashboard, clientes, pagos</text>
+  <text x="440" y="190" text-anchor="middle" class="small">lecturas, tarifas y auth</text>
+
+  <rect x="700" y="75" width="300" height="140" class="box" fill="#fef3c7"/>
+  <text x="850" y="113" text-anchor="middle" class="label">Servicio RAG</text>
+  <text x="850" y="140" text-anchor="middle" class="small">Spring Boot + Java 21 :8081</text>
+  <text x="850" y="166" text-anchor="middle" class="small">ChatController / ChatService</text>
+  <text x="850" y="190" text-anchor="middle" class="small">DocumentController / Flyway</text>
+
+  <rect x="300" y="335" width="280" height="105" class="box" fill="#e2e8f0"/>
+  <text x="440" y="374" text-anchor="middle" class="label">MySQL</text>
+  <text x="440" y="402" text-anchor="middle" class="small">gota_db - datos operativos</text>
+  <text x="440" y="425" text-anchor="middle" class="small">clientes, tarifas y pagos</text>
+
+  <rect x="700" y="335" width="300" height="105" class="box" fill="#fce7f3"/>
+  <text x="850" y="374" text-anchor="middle" class="label">PostgreSQL + pgvector</text>
+  <text x="850" y="402" text-anchor="middle" class="small">gota_rag</text>
+  <text x="850" y="425" text-anchor="middle" class="small">documentos, chunks y embeddings</text>
+
+  <rect x="700" y="555" width="300" height="105" class="box" fill="#ede9fe"/>
+  <text x="850" y="594" text-anchor="middle" class="label">Ollama local</text>
+  <text x="850" y="622" text-anchor="middle" class="small">nomic-embed-text</text>
+  <text x="850" y="645" text-anchor="middle" class="small">llama3.2</text>
+
+  <path d="M235 140 H300" class="line"/>
+  <text x="265" y="128" text-anchor="middle" class="small">HTTP</text>
+  <path d="M235 165 C430 260 590 225 700 165" class="line"/>
+  <text x="475" y="244" text-anchor="middle" class="small">POST /api/rag/chat</text>
+  <path d="M440 215 V335" class="line"/>
+  <text x="465" y="285" class="small">SQL del monolito</text>
+  <path d="M700 210 V335" class="line"/>
+  <text x="730" y="285" class="small">JDBC + Flyway</text>
+  <path d="M850 440 V555" class="line"/>
+  <text x="885" y="505" class="small">embeddings / chat</text>
+  <path d="M700 390 C630 390 610 270 700 170" class="line dashed"/>
+  <text x="610" y="330" text-anchor="middle" class="small">consulta operativa</text>
+
+  <rect x="55" y="535" width="500" height="125" class="box dashed" fill="#f1f5f9"/>
+  <text x="305" y="570" text-anchor="middle" class="label">Fuera del alcance actual</text>
+  <text x="305" y="598" text-anchor="middle" class="small">Sin Next.js, captcha, colas, pagos externos</text>
+  <text x="305" y="624" text-anchor="middle" class="small">ni replicación NoSQL en este repositorio</text>
+</svg>

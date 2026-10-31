@@ -146,6 +146,11 @@ La respuesta contiene el identificador del documento almacenado:
 }
 ```
 
-La recuperación de fragmentos mediante `pgvector` todavía debe conectarse al
-endpoint de chat. Hasta completar esa etapa, la ingesta no modifica el
-comportamiento de las respuestas.
+La recuperación de fragmentos mediante `pgvector` ya está conectada al endpoint
+de chat: la pregunta se convierte en embedding, se recuperan hasta cinco
+fragmentos y se agregan al prompt antes de llamar a Ollama. La ingesta modifica
+el conocimiento disponible para consultas posteriores, pero no cambia por sí
+sola las respuestas de conversaciones ya procesadas.
+
+La arquitectura integrada y el procedimiento de prueba de todo el repositorio
+se documentan en [`../README.md`](../README.md).
